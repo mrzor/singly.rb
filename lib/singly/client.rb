@@ -12,6 +12,10 @@ module Singly
       get("/profiles", query)
     end
 
+    def profile
+      get("/profile")
+    end
+
     def foursquare
       @foursquare ||= Singly::Service::Foursquare.new(self)
     end
