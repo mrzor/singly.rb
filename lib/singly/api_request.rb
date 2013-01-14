@@ -14,13 +14,30 @@ module Singly
     end
 
     def get(path, query={})
-      url = api_url(path)
+      args = prepare_httparty_call(path, query)
+      httparty = HTTParty.get(*args)
+      handle_httparty_response(httparty)
+    end
+
+    def delete(path, query={})
+      args = prepare_httparty_call(path, query)
+      httparty = HTTParty.delete(*args)
+      handle_httparty_response(httparty)
+    end
+
+    private
+
+    def prepare_httparty_call path, query={}, body={}
       query = query.merge(:access_token => @access_token) if @access_token
       options = {}
       options[:query] = query if query.any?
-      http = HTTParty.get(url, options)
-      return JSON.parse(http.body) if http.success?
-      raise Net::HTTPError.new(http.response.message, http.response)
+      options[:body] = body if body.any?
+      return [api_url(path), options]
+    end
+
+    def handle_httparty_response httparty
+      return JSON.parse(httparty.body) if httparty.success?
+      raise Net::HTTPError.new(httparty.response.message, httparty.response)
     end
   end
 end
