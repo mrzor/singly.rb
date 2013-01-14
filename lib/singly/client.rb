@@ -16,6 +16,13 @@ module Singly
       get("/profile")
     end
 
+    # profile_id like <twitter-id>@twitter to delete one profile
+    # profile_id like twitter to delete all twitter profiles
+    # profile_id like nil to delete all profiles
+    def delete_profiles profile_id
+      delete("/profiles/#{profile_id}")
+    end
+
     def foursquare
       @foursquare ||= Singly::Service::Foursquare.new(self)
     end
